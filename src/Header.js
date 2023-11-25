@@ -1,6 +1,36 @@
 import React from 'react';
+import { useDispatch } from 'react-redux';
+import { Link, useNavigate } from 'react-router-dom';
+import { ToastContainer, toast } from 'react-toastify';
+
+
 
 const Header = () => {
+
+    const user = JSON.parse(localStorage.getItem("user"));
+
+
+    const dispatch = useDispatch()
+    const navigate = useNavigate()
+
+
+    const handleLoggedout = () => {
+
+        localStorage.removeItem("token")
+        localStorage.removeItem("user")
+        localStorage.removeItem("cart")
+        toast("Logged out")
+
+        dispatch({ type: 'LOGIN_ERROR' })
+        // Navigate to '/'
+        navigate('/');
+
+    
+    }
+
+    const handleLogin = () => {
+        navigate("/login")
+    }
     return (
         <>
             <nav className="navbar navbar-dark bg-dark navbar-expand-lg">
@@ -28,12 +58,19 @@ const Header = () => {
                         </ul>
 
                         <div className="l-c d-flex flex-md-column flex-lg-row flex-column">
-                            <a href="../login" className="btn btn-outline-success header-login-btn">
-                                Login
-                            </a>
-                            <a href="../cart" className="btn btn-outline-success header-cart-btn">
+                            {localStorage.getItem("token") ? '' :
+                                <button onClick={handleLogin} className="btn btn-outline-success header-login-btn">
+                                    Login
+                                </button>}
+                            {localStorage.getItem("token") ? <button onClick={handleLoggedout} className="btn btn-outline-success header-login-btn">
+                                Logout
+                            </button> : ""}
+                            <Link to="/cart" className="btn btn-outline-success header-cart-btn">
                                 <i className="fa-solid fa-cart-shopping"></i>Cart
-                            </a>
+                            </Link>
+                            <Link to="/orders" className="btn btn-outline-success header-cart-btn">
+                                Orders
+                            </Link>
                         </div>
                     </div>
                 </div>
@@ -42,20 +79,35 @@ const Header = () => {
             <div className="container-fluid header bn ">
                 <ul className="nav">
                     <li className="nav-item nav-2 ">
-                        <a className="nav-link" aria-current="page" href="/">Home</a>
+                        <Link to="/" className="nav-link" aria-current="page" >Home</Link>
                     </li>
+                    {(!user) ? "" : user.firstName === "1" ? (
+                        <>
+
+                            <li className="nav-item nav-2">
+                                <Link to="/addproducts" className="nav-link" aria-current="page">Add Products</Link>
+                            </li>
+                            <li className="nav-item nav-2">
+                                <Link to="/addfeatured" className="nav-link" aria-current="page">Add Featured</Link>
+                            </li>
+                        </>
+
+                    ) : null}
+
+
                     <li className="nav-item nav-2">
-                        <a className="nav-link" href="../allproducts">All Products</a>
+                        <Link to='/allproducts' className="nav-link">All Products</Link>
                     </li>
                     <li className="nav-item nav-2 nav-2 dropdown">
                         <a href='#' className="women-btn nav-link dropdown-toggle" role="button" data-bs-toggle="dropdown" aria-expanded="false">
                             Women
                         </a>
                         <ul className="dropdown-menu">
-                            <li><a className="dropdown-item" href="../women/allproducts-women">All Products</a></li>
-                            <li><a className="dropdown-item" href="../women/women-dresses">Dresses</a></li>
-                            <li><a className="dropdown-item" href="../women/women-pants">Pants</a></li>
-                            <li><a className="dropdown-item" href="../women/women-skirts">Skirts</a></li>
+                            <li><Link to='/allproductswomen' className="dropdown-item" >All Products</Link></li>
+                            <li><Link to='/womendresses' className="dropdown-item" >Dresses</Link></li>
+                            <li><Link to='/womenpants' className="dropdown-item" >Pants</Link></li>
+                            <li><Link to='/womenskirts' className="dropdown-item" >Skirts</Link></li>
+
                         </ul>
                     </li>
                     <li className="nav-item nav-2 dropdown">
@@ -63,17 +115,19 @@ const Header = () => {
                             Men
                         </a>
                         <ul className="dropdown-menu">
-                            <li><a className="dropdown-item" href="../men/allproducts-men">All Products</a></li>
-                            <li><a className="dropdown-item" href="../men/men-shirts">Shirts</a></li>
-                            <li><a className="dropdown-item" href="../men/men-pants">Pants</a></li>
-                            <li><a className="dropdown-item" href="../men/men-hoodies">Hoodies</a></li>
+                            <li><Link to='/allproductsmen' className="dropdown-item" >All Products</Link></li>
+                            <li><Link to='/menshirts' className="dropdown-item">Shirts</Link></li>
+                            <li><Link to='/menpants' className="dropdown-item">Pants</Link></li>
+                            <li><Link to='/menhoodies' className="dropdown-item">Hoodies</Link></li>
+
                         </ul>
                     </li>
+
                     <li className="nav-item nav-2">
-                        <a className="nav-link" href="../kids">Kids</a>
+                        <Link to='/allproductskids' className="nav-link">Kids</Link>
                     </li>
                     <li className="nav-item nav-2 hc">
-                        <a className="nav-link header-contact" href="../contactus">Contact</a>
+                        <Link className="nav-link header-contact" to="/contactus">Contact</Link>
                     </li>
                 </ul>
             </div>
